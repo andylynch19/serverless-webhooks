@@ -9,7 +9,7 @@ Resources:
         - Stackery Stack ${StackeryStackTagName} Environment ${StackeryEnvironmentTagName} Function ${ResourceName}
         - ResourceName: handleWebhook
       CodeUri: src/handleWebhook
-      Handler: index.handler
+      Handler: index.githubWebhookHandler
       Runtime: nodejs12.x
       MemorySize: 3008
       Timeout: 30
@@ -17,18 +17,18 @@ Resources:
       Policies:
         - AWSXrayWriteOnlyAccess
       Events:
-        API:
+        listenForWebhook:
           Type: Api
           Properties:
             Path: /webhook
             Method: POST
-            RestApiId: !Ref API
+            RestApiId: !Ref listenForWebhook
       Environment:
         Variables:
           GITHUB_WEBHOOK_SECRET: !Ref StackeryEnvConfiggithubSecretAsString
     Metadata:
       StackeryName: handleWebhook
-  API:
+  listenForWebhook:
     Type: AWS::Serverless::Api
     Properties:
       Name: !Sub
